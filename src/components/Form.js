@@ -1,7 +1,5 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import "../App.css";
-// import cat from "../images/cat.jpeg";
-import Data from "../meme_generator_data";
 
 function Form(props) {
 
@@ -13,12 +11,11 @@ function Form(props) {
   
   const [meme,setMeme] =useState(memeData);
 
-  const [allMeme,setAllMeme] = useState(Data);
+  const [allMeme,setAllMeme] = useState([]);
 
   function getImage() {
-    const memeArrays = allMeme.data.memes;
-    const randomNumber = Math.floor(Math.random() * memeArrays.length);
-    const imgUrl = memeArrays[randomNumber].url;
+    const randomNumber = Math.floor(Math.random() * allMeme.length);
+    const imgUrl = allMeme[randomNumber].url;
     setMeme(
       (prevImage)=>({
         ...prevImage,
@@ -34,6 +31,13 @@ function handleChange(event){
       [name]:value
     }))
 }
+
+useEffect(()=>{
+  fetch("https://api.imgflip.com/get_memes")
+  .then(res=>res.json())
+  .then(resData => setAllMeme(resData.data.memes))
+},[])
+
 
 
   return (
